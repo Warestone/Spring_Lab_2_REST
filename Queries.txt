@@ -1,0 +1,54 @@
+2. Создать запросы для вывода:
+a)всех различных названий и стоимостей книг;
+select distinct name, cost from book
+
+b)всех различных районов, в которых проживают покупатели;
+select distinct region from customer
+
+c)всех различных месяцев, когда производились покупки
+select distinct extract(MONTH from date) as month, * from purchase
+
+
+
+3. Создать запросы для получения информации о:
+a)	фамилиях и размере скидки всех покупателей, проживающих в Нижегородском районе;
+select last_name, discount from customer where region='Нижегородский'
+
+b)	названиях магазинов Сормовского или Советского районов;
+select name from shop where region in ('Сормовский','Советский')
+
+c)	Названиях  и стоимости книг, в которых встречается слово Windows, или стоящих более 20000 руб. Вывод результатов организовать по названию и убыванию цены книг.
+select name, cost from book where name like('Windows %') or cost>20000 order by name, cost desc
+
+
+
+4.	Для каждой покупки вывести следующие данные:
+a.	фамилию покупателя и название магазина, где производилась покупка;
+select c1.last_name, s1.name from customer c1, shop s1, purchase p1 where p1.customer_id = c1.id and p1.shop_id = s1.id
+
+b.	дату, фамилию покупателя, скидку, название и количество купленных книг.
+select p1.date, c1.last_name, c1.discount, b1.name, p1.quantity 
+from customer c1, book b1, purchase p1 where p1.customer_id = c1.id and p1.book_id = b1.id
+
+
+
+5.	Определить:
+a.	номер заказа, фамилию покупателя и дату для покупок, в которых было продано книг на сумму не меньшую чем 60000 руб.
+select p1.id, c1.last_name, p1.date
+from customer c1, book b1, purchase p1 where p1.customer_id = c1.id and p1.book_id = b1.id and p1.price >=60000
+
+b.	покупки, сделанные покупателем в своем районе не ранее марта месяца. Вывести фамилию покупателя, район, дату. Произвести сортировку;
+select c1.last_name, c1.region, p1.date
+from customer c1, shop s1, purchase p1 
+where p1.customer_id = c1.id and p1.shop_id = s1.id and s1.region = c1.region
+and (select extract(month from date) from purchase where id = p1.id)>=3 order by last_name
+
+c.	магазины, расположенные в любом районе, кроме Автозаводского, где покупали книги те, у кого скидка от 10 до 15 %;
+select s1.name
+from customer c1, shop s1, purchase p1 
+where p1.customer_id = c1.id and p1.shop_id = s1.id and s1.region!='Автозаводский' and c1.discount>=10 and c1.discount<15
+
+d.	данные по покупке книг (название, район складирования, количество), приобретенных в районе складирования и содержащихся в запасе более 10 штук. Включить данные о стоимости и отсортировать по возрастанию. 
+select b1.name, b1.storage, b1.quantity, b1.cost
+from shop s1, book b1, purchase p1 
+where p1.book_id = b1.id and p1.shop_id = s1.id and s1.region = b1.storage and b1.quantity > 10 order by b1.cost

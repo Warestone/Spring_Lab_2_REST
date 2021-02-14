@@ -1,0 +1,77 @@
+CREATE TABLE public.customer
+(
+    id serial NOT NULL,
+    last_name character varying(50)[] NOT NULL,
+    region character varying(50)[] NOT NULL,
+    discount double precision NOT NULL,
+    PRIMARY KEY (id)
+);
+ALTER TABLE public.customer
+    OWNER to postgres;
+
+
+CREATE TABLE public.shop
+(
+    id serial NOT NULL,
+    name character varying(100)[] NOT NULL,
+    region character varying(50)[] NOT NULL,
+    commission_pct double precision NOT NULL,
+    PRIMARY KEY (id)
+);
+ALTER TABLE public.shop
+    OWNER to postgres;
+	
+	
+CREATE TABLE public.book
+(
+    id serial NOT NULL,
+    name character varying(150)[] NOT NULL,
+    cost double precision NOT NULL,
+    storage character varying(150)[] NOT NULL,
+    quantity integer NOT NULL,
+    PRIMARY KEY (id)
+);
+ALTER TABLE public.book
+    OWNER to postgres;
+
+
+
+CREATE TABLE public.purchase
+(
+    id serial NOT NULL,
+    date date NOT NULL,
+    shop_id integer NOT NULL,
+    customer_id integer NOT NULL,
+    book_id integer NOT NULL,
+    quantity integer NOT NULL,
+    price double precision NOT NULL,
+    PRIMARY KEY (id)
+);
+ALTER TABLE public.purchase
+    OWNER to postgres;
+	
+	
+insert into book (name, cost, storage, quantity) values
+('1984 Дж. Оруэлл', 500, 'Главный склад', 50),
+('Harstman 9th edition', 2000, 'Главный склад', 7),
+('Windows XP/Vista/7/8/8.1/10', 7000, 'Второстепенный склад', 4),
+('Священное писание злого программиста', 40000, 'Главный склад', 1);
+
+insert into shop (name, region, commission_pct) values
+('Покровский', 'Центр', 1.5),
+('Мир грёз', 'Сормовский', 1),
+('Литрес', 'Московский', 3),
+('Читай-Город', 'Советский', 1.5),
+('Буквоед', 'Сормовский', 1),
+('The Book', 'Советский', 3);
+
+insert into customer (last_name, region, discount) values
+('Дятел', 'Центральный', 15),
+('Тимофеев', 'Центральный', 10),
+('Швец','Южный',5),
+('Навальный', 'Нижегородский', 10),
+('Акимов','Нижегородский',30);
+
+insert into purchase (customer_id, book_id, shop_id, "date", price, quantity) values 
+(1,1,2,'12.02.2021', 5000, 3),
+(2,3,2,'12.01.2021', 70000, 30);
